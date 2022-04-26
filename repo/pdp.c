@@ -3,19 +3,10 @@
 #include<stdarg.h>
 #include<errno.h>
 #include<string.h>
-
-typedef unsigned char byte;
-typedef unsigned short int word;
-typedef word Adress;
-
-#define MEMSIZE (64*1024)
-
-#define ERROR 0
-#define INFO 1
-#define TRACE 2
-#define DEBUG 3
+#include "all.h"
 
 word mem[MEMSIZE];
+
 
 /*void log(int log_level, const char * format, ...)
 {
@@ -24,10 +15,10 @@ word mem[MEMSIZE];
 
  
 }*/
-void mem_dump(adr start, word n)
+void mem_dump(Adress start, word n)
 {
-    adr i;
-    for(i = 0; i < n; i=i+2) {
+    Adress i;
+    for(i = 0; i < n; i+=2) {
         word w = w_read(start + i);
         printf("%06ho : %06ho\n", start + i, w);
     }
@@ -49,15 +40,14 @@ void w_write(Adress adr, word w)
     assert(adr % 2 == 0);
     mem[adr] = w;
 }
+
 byte b_read(Adress adr)
 {
     byte b;
     if(adr % 2 == 0)
         b = mem[adr] & 0xFF; //b = (byte)mem[a]
     else
-    {
-        b = mem[adr-1] << 8 & 0xFF;
-    }    
+        b = mem[adr-1] >> 8 & 0xFF;
     return b;
 }
 void test_mem()
@@ -68,16 +58,22 @@ void test_mem()
     printf("%02hhx = %02hhx\n", w0, w_res);
     assert(w0 == w_res);
 
-    Adress a = 5;
+    Adress a = 6;
     byte b1 = 0xcb;
     byte b0 = 0x0a;
     word w = 0xcb0a;
     w_write(a, w);
+    word wres = w_read(a);
     word b0res = b_read(a);
     word b1res = b_read(a+1);
-    printf("ww/br \t %04hx = %02hhx%02hhx\n", w, b1res, b0res);
+    printf("ww/br \t %04hx = %02hhx%02hhx\n", wres, b1res, b0res);
     assert(b0 == b0res);
     assert(b1 == b1res);
+}
+void mytest_mem()
+{
+    w_write(01000, 0010101);
+    w_write(01002, 0);
 }
 int main(int argc, char * argv[]) 
 {
@@ -89,7 +85,8 @@ int main(int argc, char * argv[])
         return errno;
     }
     
-    
+    mytest_mem();
+    run();
     fclose(fin);
     return 0;
 }
