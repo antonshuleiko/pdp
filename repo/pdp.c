@@ -4,6 +4,7 @@
 #include<errno.h>
 #include<string.h>
 #include "all.h"
+#include<stdlib.h>
 
 word mem[MEMSIZE];
 
@@ -73,7 +74,8 @@ void test_mem()
 void mytest_mem()
 {
     w_write(01000, 0010101);
-    w_write(01002, 0);
+    w_write(01002, 0110101);
+    w_write(01004, 0);
 }
 int main(int argc, char * argv[]) 
 {
@@ -84,7 +86,6 @@ int main(int argc, char * argv[])
         perror(filename);
         return errno;
     }
-    
     mytest_mem();
     run();
     fclose(fin);

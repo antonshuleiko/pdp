@@ -12,24 +12,25 @@ void run()
         trace("%06o %06o: ", pc, w);
         pc += 2;
         int word_points = 0;
-        if (w == 0)
+        for(int i = 0; ; i++)
         {
-            trace("halt ");
-            do_halt();
-        }
-        for(int i = 0; i < 4; i++)
-        {
+            /*if(cmd[i].name == (char *)("unknown"))
+            {
+                trace("AAAAAunknown\n");
+                break;
+            }*/
+            if (w == 0)
+            {
+                trace("halt\n");
+                do_halt();
+            }
             if((w & cmd[i].mask) == cmd[i].opcode)
             {
-                trace("%s ", cmd[i].name);
+                trace("%s\n", cmd[i].name);
                 cmd[i].do_func();
                 word_points += 1;
+                break;
             }
-        }
-        if(word_points == 0)
-        {
-            trace("unknown");
-            do_nothing();
         }
     }
 }
