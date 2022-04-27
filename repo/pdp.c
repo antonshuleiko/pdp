@@ -34,24 +34,43 @@ void trace(const char * fmt, ...)
 word w_read(Adress adr)
 {
     assert(adr % 2 == 0);
+    if(adr <= 7)
+        return reg[adr];
     return mem[adr];
 }
 void w_write(Adress adr, word w)
 {
     assert(adr % 2 == 0);
-    mem[adr] = w;
+    if(adr <= 7)
+        reg[adr] = w;
+    else
+        mem[adr] = w;
 }
-
+void b_write(Adress adr, byte b)
+{
+    if(adr <= 7)
+        reg[adr] = b;
+    else
+        mem[adr] = b;
+}
 byte b_read(Adress adr)
 {
     byte b;
+    if(adr <= 7)
+    {
+        if(adr % 2 == 0)
+            b = reg[adr] & 0xFF; 
+        else
+            b = reg[adr-1] >> 8 & 0xFF;
+        return b;
+    }
     if(adr % 2 == 0)
         b = mem[adr] & 0xFF; //b = (byte)mem[a]
     else
         b = mem[adr-1] >> 8 & 0xFF;
     return b;
 }
-void test_mem()
+/*void test_mem()
 {
     word w0 = 0x0a;
     w_write(2, w0);
@@ -74,8 +93,49 @@ void test_mem()
 void mytest_mem()
 {
     w_write(01000, 0010101);
-    w_write(01002, 0110101);
-    w_write(01004, 0);
+    w_write(01002, 0061101);
+    w_write(01004, 0111101);
+    w_write(01006, 0);
+}
+*/
+void test_mode0(){
+  trace("Test mode 0:");
+  reg[0] = 5;
+  Arg res = get_mr(00, GET_MR_DD);
+  assert(res.adr == 0);
+  assert(res.val == 5);
+
+  reg[2] = 13;
+  res = get_mr(02, GET_MR_DD);
+  assert(res.adr == 2);
+  assert(res.val == 13);
+    trace(" ... OK\n");
+}
+void test_mode1(){
+    trace("Test mode 1:");
+    word a, val, B;
+    // check word
+    B = 0;
+    a = 0200;
+    val = 01234;
+  reg[0] = a;
+    w_write(a, val);
+
+  Arg res = get_mr(010, GET_MR_SS);
+  assert(res.adr == a);
+  assert(res.val == val);
+
+    // check byte
+    B = 1;
+    a = 0200;
+    val = 01234; 
+  reg[0] = a;
+    w_write(a, val);
+
+  res = get_mr(010, GET_MR_SS);
+  assert(res.adr == a);
+  assert(res.val == (byte)val);
+    trace(" ... OK\n");
 }
 int main(int argc, char * argv[]) 
 {
@@ -86,7 +146,8 @@ int main(int argc, char * argv[])
         perror(filename);
         return errno;
     }
-    mytest_mem();
+    test_mode0();
+    test_mode1();
     run();
     fclose(fin);
     return 0;
