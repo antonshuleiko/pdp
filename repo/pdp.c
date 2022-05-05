@@ -33,18 +33,21 @@ void trace(const char * fmt, ...)
 }
 word w_read(Adress adr)
 {
-    assert(adr % 2 == 0);
+    //assert(adr % 2 == 0);
     if(adr <= 7)
         return reg[adr];
-    return mem[adr];
+    return (((word) mem[adr + 1]) << 8) | mem[adr];
 }
 void w_write(Adress adr, word w)
 {
-    assert(adr % 2 == 0);
+    //assert(adr % 2 == 0);
     if(adr <= 7)
         reg[adr] = w;
     else
+    {
         mem[adr] = w;
+        mem[adr + 1] = w >> 8;
+    }
 }
 void b_write(Adress adr, byte b)
 {
@@ -90,6 +93,7 @@ byte b_read(Adress adr)
     assert(b0 == b0res);
     assert(b1 == b1res);
 }
+*/
 void mytest_mem()
 {
     w_write(01000, 0010101);
@@ -97,7 +101,7 @@ void mytest_mem()
     w_write(01004, 0111101);
     w_write(01006, 0);
 }
-*/
+
 void test_mode0(){
   trace("Test mode 0:");
   reg[0] = 5;
@@ -118,7 +122,7 @@ void test_mode1(){
     B = 0;
     a = 0200;
     val = 01234;
-  reg[0] = a;
+    reg[0] = a;
     w_write(a, val);
 
   Arg res = get_mr(010, GET_MR_SS);
@@ -139,16 +143,19 @@ void test_mode1(){
 }
 int main(int argc, char * argv[]) 
 {
-    char * filename = argv[argc - 1];
-    FILE * fin  = fopen(filename, "r");
-    if (fin == NULL)
+    Adress n, adr;
+    byte val;
+    while(scanf("%hx%hx", &adr, &n) == 2) 
     {
-        perror(filename);
-        return errno;
+        for (Adress i = 0; i < n; i++) 
+        {
+            scanf("%hhx", &val);
+            b_write(adr + i, val);
+        }
     }
-    test_mode0();
-    test_mode1();
+    //mytest_mem();
+    //test_mode0();
+    //test_mode1();
     run();
-    fclose(fin);
     return 0;
 }

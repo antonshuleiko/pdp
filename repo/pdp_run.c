@@ -29,7 +29,7 @@ Arg get_mr(word w, int forwhat)
         else if((w >> diff) == 1)
             res.val = b_read(res.adr);
         else
-            trace("Something  incomprehensible case1");
+            trace("Something  incomprehensible case1\n");
         trace("(R%o) ", r);
         break;
     case 2:     //(R3)+     #3
@@ -46,7 +46,7 @@ Arg get_mr(word w, int forwhat)
             reg[r] += 1;
         }
         else
-            trace("Something  incomprehensible case2");
+            trace("Something  incomprehensible case2\n");
         trace("(R%o) ", r);
         if(r == 7)
             trace("#%o ", res.val);
@@ -74,18 +74,19 @@ void run()
             {
                 trace("AAAAAunknown\n");
                 break;
-            }*/
+            }
             if (w == 0)
             {
                 trace("halt\n");
                 do_halt();
-            }
+            }*/
             if((w & cmd[i].mask) == cmd[i].opcode)
             {
                 trace("%s\n", cmd[i].name);
-                cmd[i].do_func();
                 ss = get_mr(w >> 6, GET_MR_SS);
                 dd = get_mr(w, GET_MR_DD);
+                cmd[i].do_func();
+                regs_print();
                 break;
             }
         }

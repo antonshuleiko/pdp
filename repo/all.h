@@ -39,6 +39,7 @@ word w_read(Adress adr);
 void w_write(Adress adr, word w);
 byte b_read(Adress adr);
 void run();
+void regs_print();
 
 Arg get_mr(word w, int forwhat);
 
@@ -46,3 +47,4 @@ void do_halt();
 void do_mov();
 void do_add();
 void do_nothing();
+unsigned sum(unsigned int a, unsigned int b);
