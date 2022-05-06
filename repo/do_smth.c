@@ -23,16 +23,18 @@ void do_mov() {
     w_write(dd.adr, ss.val);
     trace("_________%06o_______", dd.adr);
 }
-void do_add() {
-    word m_w = w_read(pc - 2);
-    w_write(m_w & 7, ss.val + dd.val);     // w & 7 это dd.adr
+void do_add() 
+{
+    w_write(dd.adr, ss.val + dd.val);     // w & 7 это dd.adr
 }
-void do_nothing() {
+void do_nothing()
+{
     printf("nothing\n");
 }
 
 void regs_print()
 {
+    printf("\t\t\t\t");
     for(int i = 0; i < 8; i++)
         printf("%d:%06o ", i, reg[i]);
     printf("\n");

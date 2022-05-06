@@ -55,7 +55,7 @@ Arg get_mr(word w, int word_li)
         }
         else
             trace("Something  incomprehensible case2\n");
-        trace("(R%o) ", r);
+        // trace("(R%o)## ", r);
         if(r == 7)
             trace("#%o ", res.val);
         else
@@ -90,10 +90,12 @@ void run()
             }*/
             if((w & cmd[i].mask) == cmd[i].opcode)
             {
-                trace("%s\n", cmd[i].name);
+                trace("%s ", cmd[i].name);
                 ss = get_mr(w >> 6, word_li_func(w, GET_MR_SS));
                 dd = get_mr(w, word_li_func(w, GET_MR_DD));
+                // trace("ss.a = %o ss.val=%o dd.a=%o dd.val=%o ", ss.adr, ss.val, dd.adr, dd.val);
                 cmd[i].do_func();
+                trace("\n");
                 regs_print();
                 break;
             }
