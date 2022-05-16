@@ -43,8 +43,11 @@ void regs_print();
 
 Arg get_mr(word w, int forwhat);
 
-void do_halt();
+
 void do_mov();
 void do_add();
 void do_nothing();
 unsigned sum(unsigned int a, unsigned int b);
+void do_sob();
+void do_clr(); 
+void do_halt();

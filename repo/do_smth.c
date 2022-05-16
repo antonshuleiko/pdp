@@ -5,6 +5,10 @@
 
 word reg[8]; //регистры R0 .. R7
 
+void do_clr()
+{
+    reg[dd.adr] = 0;
+}
 void do_halt()
 {
     trace("THE END!!!\n");
@@ -17,6 +21,8 @@ Command cmd[] = {
     {0170000, 0010000, "mov", do_mov},
     {0170000, 0060000, "add", do_add},
     {0177777, 0000000, "halt", do_halt},
+    {0177000, 0077000, "sob", do_sob},
+    {0007700, 0005000, "clr", do_clr},
     {0000000, 0000000, "unknown", do_nothing}
 };
 void do_mov() {
@@ -38,4 +44,13 @@ void regs_print()
     for(int i = 0; i < 8; i++)
         printf("%d:%06o ", i, reg[i]);
     printf("\n");
+}
+
+void do_sob()
+{
+    word mw = w_read(pc - 2);
+    int x = mw & 63;
+    int re = (mw >> 6) & 7;
+    if (--reg[re])
+        reg[7] -= x * 2;
 }

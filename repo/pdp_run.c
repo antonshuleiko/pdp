@@ -22,6 +22,8 @@ Arg get_mr(word w, int word_li)
     Arg res;
     int r = w & 7;
     int mode = (w >> 3) & 7;
+    printf("%o", w >> 3);
+    printf("-------%d-------\n", mode);
     switch (mode)
     {
     case 0:     //R3
@@ -61,11 +63,30 @@ Arg get_mr(word w, int word_li)
         else
             trace("(R%o)+ ", r);
         break;
+    case 3:
+        res.adr = w_read(reg[r]);
+        if(word_li)
+        {
+            res.val = w_read(res.adr);
+        }
+        else if(word_li == 0 && (r == 6 || r == 7))
+        {
+            res.val = b_read(res.adr);
+        }
+        else
+            trace("Something  incomprehensible case3\n");
+        // trace("(R%o)## ", r);
+        reg[r] += 2;
+        if (r == 7) 
+            trace(" @#%06o,", res.adr);
+        else
+            trace("@(R%o)+ ", r);
+        break;
     default:
         fprintf(stderr, "Mode %o NOT IMPLEMENTED YET\n", mode);
         exit(1);
     }
-    return res;
+    
 }
 
 void run()
