@@ -22,6 +22,7 @@ typedef struct {
     word opcode;
     char * name;
     void (*do_func)(void);
+    word ssdd;
 }Command;
 typedef struct {
     word val;    //значение аргумента

@@ -22,7 +22,6 @@ Arg get_mr(word w, int word_li)
     Arg res;
     int r = w & 7;
     int mode = (w >> 3) & 7;
-    printf("%o", w >> 3);
     printf("-------%d-------\n", mode);
     switch (mode)
     {
@@ -112,8 +111,10 @@ void run()
             if((w & cmd[i].mask) == cmd[i].opcode)
             {
                 trace("%s ", cmd[i].name);
-                ss = get_mr(w >> 6, word_li_func(w, GET_MR_SS));
-                dd = get_mr(w, word_li_func(w, GET_MR_DD));
+                if ((cmd[i].ssdd & 1) == 1)
+                    dd = get_mr(w, word_li_func(w, GET_MR_DD));
+                if (((cmd[i].ssdd >> 1) & 1) == 1)
+                    ss = get_mr(w >> 6, word_li_func(w, GET_MR_SS));
                 // trace("ss.a = %o ss.val=%o dd.a=%o dd.val=%o ", ss.adr, ss.val, dd.adr, dd.val);
                 cmd[i].do_func();
                 trace("\n");
